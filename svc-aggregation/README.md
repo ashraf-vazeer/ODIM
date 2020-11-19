@@ -161,22 +161,22 @@ curl -i GET \
 >**Sample response body**
 ```
 {
-   ?   "@odata.type":"#ConnectionMethodCollection.ConnectionMethodCollection",
-   ?   "@odata.id":"/redfish/v1/AggregationService/ConnectionMethods",
-   ?   "@odata.context":"/redfish/v1/$metadata#ConnectionMethodCollection.ConnectionMethodCollection",
-   ?   "Name":"Connection Methods",
-   ?   "Members@odata.count":3,
-   ?   "Members":[
-      ?      {
-         ?         "@odata.id":"/redfish/v1/AggregationService/ConnectionMethods/c27575d2-052d-4ce9-8be1-978cab002a0f"         ?
+   "@odata.type": "#ConnectionMethodCollection.ConnectionMethodCollection",
+   "@odata.id": "/redfish/v1/AggregationService/ConnectionMethods",
+   "@odata.context": "/redfish/v1/$metadata#ConnectionMethodCollection.ConnectionMethodCollection",
+   "Name": "Connection Methods",
+   "Members@odata.count": 3,
+   "Members": [
+      {
+         "@odata.id": "/redfish/v1/AggregationService/ConnectionMethods/c27575d2-052d-4ce9-8be1-978cab002a0f"
       },
-      ?      {
-         ?         "@odata.id":"/redfish/v1/AggregationService/ConnectionMethods/aa166b6b-a367-40ba-ac2e-402f9a0c818f"         ?
+      {
+         "@odata.id": "/redfish/v1/AggregationService/ConnectionMethods/aa166b6b-a367-40ba-ac2e-402f9a0c818f"
       },
-      ?      {
-         ?         "@odata.id":"/redfish/v1/AggregationService/ConnectionMethods/7cb9fc3b-8b75-45da-8aad-5ff595968b71"         ?
-      }      ?
-   ]   ?
+      {
+         "@odata.id": "/redfish/v1/AggregationService/ConnectionMethods/7cb9fc3b-8b75-45da-8aad-5ff595968b71"
+      }
+   ]
 }
 ```
 
@@ -201,24 +201,24 @@ curl -i GET \
 >**Sample response body**
 ```
 {
-   ?   "@odata.type":"#ConnectionMethod.v1_0_0.ConnectionMethod",
-   ?   "@odata.id":"/redfish/v1/AggregationService/ConnectionMethods/c27575d2-052d-4ce9-8be1-978cab002a0f",
-   ?   "@odata.context":"/redfish/v1/$metadata#ConnectionMethod.v1_0_0.ConnectionMethod",
-   ?   "Id":"c27575d2-052d-4ce9-8be1-978cab002a0f",
-   ?   "Name":"Connection Method",
-   ?   "ConnectionMethodType":"Redfish",
-   ?   "ConnectionMethodVariant":"Compute:BasicAuth:GRF_v1.0.0",
-   ?   "Links":{
-      ?      "AggregationSources":[
+   "@odata.type": "#ConnectionMethod.v1_0_0.ConnectionMethod",
+   "@odata.id": "/redfish/v1/AggregationService/ConnectionMethods/c27575d2-052d-4ce9-8be1-978cab002a0f",
+   "@odata.context": "/redfish/v1/$metadata#ConnectionMethod.v1_0_0.ConnectionMethod",
+   "Id": "c27575d2-052d-4ce9-8be1-978cab002a0f",
+   "Name": "Connection Method",
+   "ConnectionMethodType": "Redfish",
+   "ConnectionMethodVariant": "Compute:BasicAuth:GRF_v1.0.0",
+   "Links": {
+      "AggregationSources": [
          {
-            "@odata.id":"/redfish/v1/AggregationService/AggregationSources/839c212d-9ab2-4868-8767-1bdcc0ce862c"
+            "@odata.id": "/redfish/v1/AggregationService/AggregationSources/839c212d-9ab2-4868-8767-1bdcc0ce862c"
          },
          {
-            "@odata.id":"/redfish/v1/AggregationService/AggregationSources/3536bb46-a023-4e3a-ac1a-7528cc18b660"
+            "@odata.id": "/redfish/v1/AggregationService/AggregationSources/3536bb46-a023-4e3a-ac1a-7528cc18b660"
          }
-      ]      ?
-   }   ?
-}?
+      ]
+   }
+}
 ```
 
 **Connection method properties**
@@ -264,65 +264,8 @@ After the plugin is successfully added as an aggregation source, it will also be
 
 
 NOTE:
+ Only a user with `ConfigureComponents` privilege can add a plugin. If you perform this operation without necessary privileges, you will receive an HTTP `403 Forbidden` error.
 
-1. Only a user with `ConfigureComponents` privilege can add a plugin. If you perform this operation without necessary privileges, you will receive an HTTP `403 Forbidden` error.
-
-2. Plugin can be added with connection method or oem information
-
-
-### Adding plugin with oem information
-```
-curl -i POST \
-   -H 'Authorization:Basic {base64_encoded_string_of_[username:password]}' \
-   -H "Content-Type:application/json" \
-   -d \
-'{"HostName":"{plugin_host}:{port}",
-  "UserName":"{plugin_userName}",
-  "Password":"{plugin_password}", 
-  "Links":{
-      "Oem":{
-         "PluginID":"{Redfish_PluginId}",
-         "PreferredAuthType":"{Preferred_aunthentication_type}",
-         "PluginType":"{plugin_type}"
-      }
-   }
-}' \
- 'https://{odim_host}:{port}/redfish/v1/AggregationService/Actions/AggregationSources'
-
-
-```
-
-> Sample request body
-
-```
-{
-   "HostName":"{plugin_host}:45001",
-   "UserName":"admin",
-   "Password":"GRFPlug!n12$4",
-   "Links":{
-      "Oem":{
-         "PluginID":"GRF",
-         "PreferredAuthType":"BasicAuth",
-         "PluginType":"Compute"
-      }
-   }
-}
-```
-
-### Request parameters
-
-|Parameter|Type|Description|
-|---------|----|-----------|
-|HostName|String \(required\)<br> |FQDN of the resource aggregator server and port of a system where the plugin is installed. The default port for the Generic Redfish Plugin is `45001`.<br> If you are using a different port, ensure that the port is greater than `45000`.<br> IMPORTANT: If you have set the `VerifyPeer` property to false in the plugin `config.json` file \(/etc/plugin\_config/config.json\), you can use IP address of the system where the plugin is installed as `HostName`.<br>|
-|UserName|String \(required\)<br> |The plugin username.|
-|Password|String \(required\)<br> |The plugin password.|
-|PluginID|String \(required\)<br> |The id of the plugin you want to add. Example: GRF \(Generic Redfish Plugin\), ILO<br> |
-|PreferredAuthType|String \(required\)<br> |Preferred authentication method to connect to the plugin - `BasicAuth` or `XAuthToken`.|
-|PluginType|String \(required\)<br> |The string that represents the type of the plugin. Allowed values: `Compute`, and `Fabric` <br> |
-
-<br><br>
-
-### Adding plugin with connection method
 
 ```
 curl -i POST \
@@ -414,28 +357,9 @@ x-frame-options":"sameorigin"
 }
 ```
 
->  Sample response body of add plugin which is added with OEM information \(HTTP 201 status\)
 
-```
-{
-   "@odata.type":"#AggregationSource.v1_0_0.AggregationSource",
-   "@odata.id":"/redfish/v1/AggregationService/AggregationSources/be626e78-7a8a-4b99-afd2-b8ed45ef3d5a",
-   "@odata.context":"/redfish/v1/$metadata#AggregationSource.AggregationSource",
-   "Id":"be626e78-7a8a-4b99-afd2-b8ed45ef3d5a",
-   "Name":"Aggregation Source",
-   "HostName":"{plugin_host}:45001",
-   "UserName":"admin",
-   "Links":{
-      "Oem":{
-         "PluginID":"GRF",
-         "PreferredAuthType":"BasicAuth",
-         "PluginType":"Compute"
-      }
-   }
-} 
-```
 
->  Sample response body of add plugin which is added with connection method \(HTTP 201 status\)
+>  Sample response body
 
 ```
 {
@@ -476,58 +400,8 @@ To view the list of links to computer system resources, perform HTTP `GET` on `/
 
 NOTE:
 
-1. Only a user with `ConfigureComponents` privilege can add a server. If you perform this operation without necessary privileges, you will receive an HTTP `403 Forbidden` error.
+Only a user with `ConfigureComponents` privilege can add a server. If you perform this operation without necessary privileges, you will receive an HTTP `403 Forbidden` error.
 
-2. BMC can be added with connection method or oem information
-
-### Adding BMC with OEM information
-```
-curl -i -X POST \
-   -H "X-Auth-Token:{X-Auth-Token}" \
-   -H "Content-Type:application/json" \
-   -d \
-'{ 
-    "HostName": "{BMC_address}", 
-    "UserName": "{BMC_UserName}", 
-    "Password": "{BMC_Password}", 
-    "Links":{     
-        "Oem": { 
-                  "PluginID": "GRF" 
-    } 
-}
-}' \
- 'https://{odim_host}:{port}/redfish/v1/AggregationService/AggregationSources'
-
-
-```
-
-> Sample request body
-
-```
-{
-   "HostName":"10.24.0.4",
-   "UserName":"admin",
-   "Password":"{BMC_password}",
-   "Links":{
-      "Oem":{
-         "PluginID":"GRF"
-      }
-   }
-}
-```
-
-### Request parameters
-
-|Parameter|Type|Description|
-|---------|----|-----------|
-|HostName|String \(required\)<br> |A valid IP address or hostname of a baseboard management controller \(BMC\).|
-|UserName|String \(required\)<br> |The username of the BMC administrator account.|
-|Password|String \(required\)<br> |The password of the BMC administrator account.|
-|Links \{|Object \(required\)<br> |Links to other resources that are related to this resource.|
-|Oem\{ PluginID \} \} |String \(required\)<br> |The plugin Id of the plugin.<br> NOTE: Before specifying the plugin Id, ensure that the installed plugin is added in the resource inventory. To know how to add a plugin, see [Adding a Plugin](GUID-4E64426F-559C-430A-AE60-61409DFB4131.md).| 
-
-
-### Adding BMC with connection method
 
 ```
 curl -i -X POST \
@@ -621,26 +495,7 @@ x-frame-options":"sameorigin"
 }
 ```
 
-> Sample response body of bmc which is added with oem information \(HTTP 201 status\)
-
-```
- {
-   "@odata.type":"#AggregationSource.v1_0_0.AggregationSource",
-   "@odata.id":"/redfish/v1/AggregationService/AggregationSources/26562c7b-060b-4fd8-977e-94b1a535f3fb",
-   "@odata.context":"/redfish/v1/$metadata#AggregationSource.AggregationSource",
-   "Id":"26562c7b-060b-4fd8-977e-94b1a535f3fb",
-   "Name":"Aggregation Source",
-   "HostName":"10.24.0.4",
-   "UserName":"admin",
-   "Links":{
-      "Oem":{
-         "PluginID":"GRF"
-      }
-   }
-}
-```
-
-> Sample response body of bmc which is added with connection method\(HTTP 201 status\)
+> Sample response body 
 
 ```
  {
@@ -722,26 +577,7 @@ curl -i GET \
 
 ```
 
-> Sample response body of bmc which is added with oem information \(HTTP 201 status\)
-
-```
- {
-   "@odata.type":"#AggregationSource.v1_0_0.AggregationSource",
-   "@odata.id":"/redfish/v1/AggregationService/AggregationSources/26562c7b-060b-4fd8-977e-94b1a535f3fb",
-   "@odata.context":"/redfish/v1/$metadata#AggregationSource.AggregationSource",
-   "Id":"26562c7b-060b-4fd8-977e-94b1a535f3fb",
-   "Name":"Aggregation Source",
-   "HostName":"10.24.0.4",
-   "UserName":"admin",
-   "Links":{
-      "Oem":{
-         "PluginID":"GRF"
-      }
-   }
-}
-```
-
-> Sample response body of bmc which is added with connection method\(HTTP 201 status\)
+> Sample response body
 
 ```
  {
@@ -802,26 +638,7 @@ curl -i PATCH \
 }
 ```
 
-> Sample response body of bmc which is added with oem information \(HTTP 201 status\)
-
-```
- {
-   "@odata.type":"#AggregationSource.v1_0_0.AggregationSource",
-   "@odata.id":"/redfish/v1/AggregationService/AggregationSources/26562c7b-060b-4fd8-977e-94b1a535f3fb",
-   "@odata.context":"/redfish/v1/$metadata#AggregationSource.AggregationSource",
-   "Id":"26562c7b-060b-4fd8-977e-94b1a535f3fb",
-   "Name":"Aggregation Source",
-   "HostName":"10.24.0.4",
-   "UserName":"admin",
-   "Links":{
-      "Oem":{
-         "PluginID":"GRF"
-      }
-   }
-}
-```
-
-> Sample response body of bmc which is added with connection method\(HTTP 201 status\)
+> Sample response body 
 
 ```
  {
@@ -1216,7 +1033,7 @@ Content-Length:491 bytes
 
 An aggregate is a user-defined collection of resources.
 
-The aggregate schema provides a mechanism to formally group the southbound resources of your choice into a specific group. The advantage of creating aggregates is that they are more persistent than the random groupings—The aggregates are available and accessible in the Resource Aggregator for ODIM environment until you delete them.
+The aggregate schema provides a mechanism to formally group the southbound resources of your choice into a specific group. The advantage of creating aggregates is that they are more persistent than the random groupings?The aggregates are available and accessible in the Resource Aggregator for ODIM environment until you delete them.
 
 The resource aggregator allows you to:
 
@@ -1789,4 +1606,3 @@ curl -i POST \
    ]
 }
 ```
-
